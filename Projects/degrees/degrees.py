@@ -55,17 +55,19 @@ def load_data(directory):
 def main():
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+    directory = sys.argv[1] if len(sys.argv) == 2 else "small"
 
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
     print("Data loaded.")
 
-    source = person_id_for_name(input("Name: "))
+    ## source = person_id_for_name(input("Name: "))
+    source = person_id_for_name("Tom Cruise")
     if source is None:
         sys.exit("Person not found.")
-    target = person_id_for_name(input("Name: "))
+    ## target = person_id_for_name(input("Name: "))
+    target = person_id_for_name("Tom Hanks")
     if target is None:
         sys.exit("Person not found.")
 
@@ -93,8 +95,19 @@ def shortest_path(source, target):
     """
 
     # TODO 
-    ##Silas
+    source_pairs = neighbors_for_person(source)
+    target_pairs = neighbors_for_person(target)
+
+    for i in source_pairs:
+        print({i})
+    
+    return list(source_pairs)
     raise NotImplementedError
+
+def find_path(list(movie_id,person_id))
+    """    
+    """
+    
 
 
 def person_id_for_name(name):
