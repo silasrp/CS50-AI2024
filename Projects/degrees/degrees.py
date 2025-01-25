@@ -2,6 +2,7 @@ import csv
 import sys
 
 from util import Node, StackFrontier, QueueFrontier
+from collections import deque
 
 # Maps names to a set of corresponding person_ids
 names = {}
@@ -11,7 +12,6 @@ people = {}
 
 # Maps movie_ids to a dictionary of: title, year, stars (a set of person_ids)
 movies = {}
-
 
 def load_data(directory):
     """
@@ -94,7 +94,7 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO 
+    """ test python
     source_pairs = neighbors_for_person(source)
     target_pairs = neighbors_for_person(target)
 
@@ -103,11 +103,61 @@ def shortest_path(source, target):
     
     return list(source_pairs)
     raise NotImplementedError
+    """
+    print ("Source = " + source)
+    print ("Target = " + target)
 
-def find_path(list(movie_id,person_id))
+    # Node for search (movie_id, person_id)
+    currentNode = ()
+
+    # Frontier is a list of nodes (initialization)
+    frontier = deque(neighbors_for_person(source))
+    print ("Added to the Frontier:")
+    for i in frontier:
+        print ({i})
+
+    # Explored Nodes is a list of explored nodes (initialization)
+    exploredPaths = deque()
+    
+    isSolution = False
+
+    while (isSolution == False):
+        currentNode = tuple(frontier.popleft())
+        exploredPaths.append(currentNode)
+        print ("Explored Nodes:")
+        for i in exploredPaths:
+            print (str({i}))
+        isSolution = check_for_solution(currentNode, target)
+        print ("Added to the Frontier:")
+        add_new_nodes_to_frontier(frontier, currentNode, exploredPaths)
+
+
+    
+    # temp code so the program doesnt break
+    print("#################################")
+    source_pairs = neighbors_for_person(source)
+    return list(source_pairs)
+
+
+def add_new_nodes_to_frontier(frontier, currentNode, exploredNodes):
+    # add to the frontier only if element is not already on the list
+    for i in neighbors_for_person(currentNode[1]):
+        if (i in frontier) or (i in exploredNodes):
+            pass
+        else:
+            frontier.append(i)            
+            print ({i})
+
+
+def check_for_solution(currentNode, target):
     """    
     """
-    
+    print ("Current Node = " + str(currentNode[1]))
+    if (currentNode[1] == target):
+        return True
+    else:
+        return False
+
 
 
 def person_id_for_name(name):
