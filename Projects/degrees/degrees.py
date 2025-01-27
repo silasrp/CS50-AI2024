@@ -63,11 +63,11 @@ def main():
     print("Data loaded.")
 
     ## source = person_id_for_name(input("Name: "))
-    source = person_id_for_name("Tom Cruise")
+    source = person_id_for_name("Chris Sarandon")
     if source is None:
         sys.exit("Person not found.")
     ## target = person_id_for_name(input("Name: "))
-    target = person_id_for_name("Tom Hanks")
+    target = person_id_for_name("Valeria Golino")
     if target is None:
         sys.exit("Person not found.")
 
@@ -133,29 +133,17 @@ def shortest_path(source, target):
         currentNode = tuple(frontier.popleft())
         print ("Exploring node: " + str(currentNode))
         isSolution = check_for_solution(currentNode, target)
-        if (isSolution):
-            break
         print_frontier(frontier)
         add_current_node_to_explored(currentNode, exploredPaths, parentChild)
+        if (isSolution):
+            break
         add_new_nodes_to_frontier(frontier, currentNode, exploredPaths, parentChild)
 
 
     # temp code so the program doesnt break
     print("#################################")
-    source_pairs = neighbors_for_person(source)
-    return list(source_pairs)
-
-def check_value_in_paths(currentNode, exploredPaths):
-    # Searching the currentNode in the existing paths
-    value_exists = False
-
-    for key, my_deque in exploredPaths.items():
-        if currentNode in my_deque:
-            #print(f"Value {currentNode} already exists in Explored Paths for key {key}.")
-            value_exists = True
-        break  # Stop searching if the value is found
-    
-    return value_exists
+    key = find_key_of_path(currentNode, exploredPaths)
+    return list(exploredPaths[key])
 
 def add_current_node_to_explored(currentNode, exploredPaths, parentChild):
     """
@@ -190,10 +178,65 @@ def add_current_node_to_explored(currentNode, exploredPaths, parentChild):
         print(key)
         if (key == -1):
             exploredPaths[len(exploredPaths)] = deque([currentNode])
-        else:    
-            exploredPaths[key].append(currentNode)
+        else:
+            deque_to_analize = exploredPaths[key]
+            print ("DEBUG")
+            print (deque_to_analize.index(parent))
+            print (len(deque_to_analize)-1)
+            if (deque_to_analize.index(parent) == len(deque_to_analize)):
+                print (exploredPaths[key])
+                exploredPaths[key].append(currentNode)  
+            else:
+                print(key, end = " ")
+                print (deque_to_analize)
+                exploredPaths[len(exploredPaths)] = deque()
+                for i in deque_to_analize:
+                    exploredPaths[len(exploredPaths)-1].append(i)
+                print (exploredPaths[len(exploredPaths)-1])
+                exploredPaths[len(exploredPaths)-1].append(currentNode)
 
     print_paths(exploredPaths)
+
+def find_key_of_path(currentNode, exploredPaths):
+    
+    found = False
+    for key, my_deque in exploredPaths.items():
+        print (str(key))
+        if currentNode in my_deque:
+            found = True
+            return key
+            
+    if not found:
+        return -1
+
+def add_new_nodes_to_frontier(frontier, currentNode, exploredPaths, parentChild):
+    
+    for i in neighbors_for_person(currentNode[1]):
+        if (i in frontier) or (check_value_in_paths(i, exploredPaths)):
+            print ("Not added to the Frontier:", end=" ")
+            print (str({i}))
+            parentChild.append((currentNode, tuple(i)))
+            pass
+        else:
+            print ("Added to the Frontier:", end=" ")
+            print (str({i}))
+            frontier.append(i)
+            parentChild.append((currentNode, tuple(i)))
+    
+    print_frontier(frontier)
+    print_parents(parentChild)
+    
+def check_value_in_paths(currentNode, exploredPaths):
+    # Searching the currentNode in the existing paths
+    value_exists = False
+
+    for key, my_deque in exploredPaths.items():
+        if currentNode in my_deque:
+            #print(f"Value {currentNode} already exists in Explored Paths for key {key}.")
+            value_exists = True
+            break  # Stop searching if the value is found
+    
+    return value_exists
 
 def find_parent(currentNode, parentChild):
     
@@ -207,34 +250,6 @@ def find_parent(currentNode, parentChild):
             
     if found_index == None:
         raise  RuntimeError
-      
-def add_new_nodes_to_frontier(frontier, currentNode, exploredPaths, parentChild):
-    
-    for i in neighbors_for_person(currentNode[1]):
-        if (i in frontier) or (check_value_in_paths(i, exploredPaths)):
-            print ("Not added to the Frontier:", end=" ")
-            print (str({i}))
-            pass
-        else:
-            print ("Added to the Frontier:", end=" ")
-            print (str({i}))
-            frontier.append(i)
-            parentChild.append([currentNode, tuple(i)])
-    
-    print_frontier(frontier)
-    print_parents(parentChild)
-    
-def find_key_of_path(currentNode, exploredPaths):
-    
-    found = False
-    for key, my_deque in exploredPaths.items():
-        print (str(key))
-        if currentNode in my_deque:
-            found = True
-            return key
-            
-    if not found:
-        return -1
 
 def check_for_solution(currentNode, target):
     """    
