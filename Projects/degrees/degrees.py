@@ -1,5 +1,6 @@
 import csv
 import sys
+import time 
 
 from util import Node, StackFrontier, QueueFrontier
 from collections import deque
@@ -91,7 +92,6 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-
     # Node for search (movie_id, person_id)
     currentNode = ()
 
@@ -117,6 +117,8 @@ def shortest_path(source, target):
             break
         add_new_nodes_to_frontier(frontier, currentNode, exploredPaths, parentChild)
 
+    if (isSolution == False):
+        return None
 
     key = find_key_of_path(currentNode, exploredPaths)
     return list(exploredPaths[key])
