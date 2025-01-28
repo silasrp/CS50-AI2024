@@ -102,16 +102,15 @@ def shortest_path(source, target):
 
     # Frontier is a list of nodes (initialization)
     frontier = deque(neighbors_for_person(source))
-
-    if (len(frontier) == 0):
-        return None
-    
+   
     for i in frontier:
         parentChild.append((('0',str(source)), (tuple(i))))
 
     isSolution = False
 
     while (isSolution == False):
+        if (len(frontier) == 0):
+            return None
         currentNode = tuple(frontier.popleft())
         isSolution = check_for_solution(currentNode, target)
         add_current_node_to_explored(currentNode, exploredPaths, parentChild)
@@ -123,7 +122,14 @@ def shortest_path(source, target):
         return None
 
     key = find_key_of_path(currentNode, exploredPaths)
-    return list(exploredPaths[key])
+
+    if (source == target):
+        return list()
+    
+    if(len(exploredPaths[key]) == 0):
+        return list()
+    else:
+        return list(exploredPaths[key])
 
 def add_current_node_to_explored(currentNode, exploredPaths, parentChild):
 
