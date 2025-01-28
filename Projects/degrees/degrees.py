@@ -1,6 +1,5 @@
 import csv
 import sys
-import time 
 
 from util import Node, StackFrontier, QueueFrontier
 from collections import deque
@@ -92,7 +91,6 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
-    start = time.perf_counter()
     # Node for search (movie_id, person_id)
     currentNode = ()
 
@@ -104,6 +102,9 @@ def shortest_path(source, target):
 
     # Frontier is a list of nodes (initialization)
     frontier = deque(neighbors_for_person(source))
+
+    if (len(frontier) == 0):
+        return None
     
     for i in frontier:
         parentChild.append((('0',str(source)), (tuple(i))))
@@ -120,9 +121,6 @@ def shortest_path(source, target):
 
     if (isSolution == False):
         return None
-
-    end = time.perf_counter()
-    print(f"Elapsed time: {end - start:.4f} seconds")
 
     key = find_key_of_path(currentNode, exploredPaths)
     return list(exploredPaths[key])
