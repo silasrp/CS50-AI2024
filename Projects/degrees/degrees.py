@@ -92,6 +92,7 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    start = time.perf_counter()
     # Node for search (movie_id, person_id)
     currentNode = ()
 
@@ -119,6 +120,9 @@ def shortest_path(source, target):
 
     if (isSolution == False):
         return None
+
+    end = time.perf_counter()
+    print(f"Elapsed time: {end - start:.4f} seconds")
 
     key = find_key_of_path(currentNode, exploredPaths)
     return list(exploredPaths[key])
