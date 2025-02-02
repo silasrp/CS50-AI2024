@@ -9,6 +9,7 @@ import sys
 X = "X"
 O = "O"
 EMPTY = None
+optimal_action = []
 
 
 def initial_state():
@@ -58,7 +59,7 @@ def actions(board):
     for i in range(len(board)):  # Row index
         for j in range(len(board[i])):  # Column index
             if (board[i][j] == EMPTY):
-                possible_actions.add(i, j)
+                possible_actions.add(tuple((i, j)))
 
     return possible_actions
 
@@ -68,13 +69,14 @@ def result(board, action):
     """
     new_board = copy.deepcopy(board)
     try:
-        if (board[action[0]][action[1]] != EMPTY):
+        if (action not in actions(board)):
             raise ValueError("Invalid move.")
         else:
             new_board[action[0]][action[1]] = player(board)
             return new_board
     except ValueError as e:
         print(f"Error: {e}. Please try again.")
+        raise
 
 
 def winner(board):
@@ -99,7 +101,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if ((winner(board) == X) or (winner(board) == O) or len(actions(board) == 0)):
+    if ((winner(board) == X) or (winner(board) == O) or (len(actions(board)) == 0)):
         return True
     else:
         return False
@@ -113,7 +115,7 @@ def utility(board):
         return 1
     elif (winner(board) == O):
         return -1
-    elif len(actions(board) == 0):
+    elif (len(actions(board)) == 0):
         return 0
 
 
@@ -121,14 +123,56 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+
+    if (player(board) == X):
+        max_value(board)
+    if (player(board) == O):
+        min_value(board)        
+
+    print(len(optimal_action))
+    if (len(optimal_action) > 0):
+        return optimal_action[0]
+    else:
+        return None
+
+
+def max_value(board):
+
+    v = -sys.maxsize - 1 # defining a minus infinity representation
+
+    if terminal(board):
+        return utility(board)
+    
+    for action in actions(board):
+        vv = v
+        v = max(v, min_value(result(board, action)))
+        if (v > vv):
+            optimal_action.clear()
+            optimal_action.insert(0,action)
+
+    return v
+
+def min_value(board):
+
+    v = sys.maxsize # defining an infinity representation
+
+    if terminal(board):
+        return utility(board)
+    
+    for action in actions(board):
+        vv = v
+        v = min(v, max_value(result(board, action)))
+        if (v < vv):
+            optimal_action.clear()
+            optimal_action.insert(0,action)
+
+    return v
 
 
 def main():
-    print(winner([[O, EMPTY, EMPTY],
-                [EMPTY, O, EMPTY],
-                [EMPTY, EMPTY, EMPTY]]))
-    
+    print(minimax([[EMPTY, O, X],
+                   [X, EMPTY, EMPTY],
+                   [X, EMPTY, O]]))
 
 if __name__ == "__main__":
     main()
